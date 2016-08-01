@@ -31,6 +31,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:lint": "eslint js/",
     "dev:server": "webpack-dev-server --progress --colors",
+    "dev:deploy": "aws s3 cp build/ s3://690f7e35/ --recursive --region eu-central-1 --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers",
     "build": "webpack --progress --colors && cp -r {index.html,data} build/"
   },
   "repository": {
