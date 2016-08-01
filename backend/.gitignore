@@ -1,6 +1,9 @@
 
 # Created by https://www.gitignore.io/api/sbt,emacs,linux,ansible,git,scala,java
 
+### CREDENTIAL FILES ###
+twitter.txt
+
 ### SBT ###
 # Simple Build Tool
 # http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
