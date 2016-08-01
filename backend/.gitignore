@@ -1,6 +1,9 @@
 
 # Created by https://www.gitignore.io/api/sbt,emacs,linux,ansible,git,scala,java
 
+### Vagrant ###
+.vagrant/
+
 ### macOS ###
 *.DS_Store
 .AppleDouble
