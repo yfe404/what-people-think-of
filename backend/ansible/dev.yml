@@ -2,5 +2,4 @@
   remote_user: vagrant
   sudo: yes
   roles:
-    - ansible-spark
-    - ansible-sbt
+    - ansible-flask
