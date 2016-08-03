@@ -4,10 +4,10 @@ import os
 
 # See assignment1.html instructions or README for how to get these credentials
 
-api_key = os.environ["API_KEY"] 
-api_secret = os.environ["API_SECRET"]
-access_token_key = os.environ["ACCESS_TOKEN_KEY"]
-access_token_secret = os.environ["ACCESS_TOKEN_SECRET"]
+api_key = os.environ["API_KEY"].strip('"')
+api_secret = os.environ["API_SECRET"].strip('"')
+access_token_key = os.environ["ACCESS_TOKEN_KEY"].strip('"')
+access_token_secret = os.environ["ACCESS_TOKEN_SECRET"].strip('"')
 
 _debug = 0
 
