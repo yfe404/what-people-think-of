@@ -1,6 +1,7 @@
 import oauth2 as oauth
 import urllib2 as urllib
 import os
+import sys
 
 # See assignment1.html instructions or README for how to get these credentials
 
@@ -53,7 +54,10 @@ def twitterreq(url, method, parameters):
 
 def fetchsamples():
 #  url = "https://stream.twitter.com/1/statuses/sample.json"
-  url = "https://api.twitter.com/1.1/search/tweets.json?q=%3A%29&result_type=recent&lang=en"	
+  if len(sys.argv) > 1:
+    url = sys.argv[1]
+  else:
+    url = "https://api.twitter.com/1.1/search/tweets.json?q=%3A%29&result_type=recent&lang=en"	
   parameters = []
   response = twitterreq(url, "GET", parameters)
   for line in response:
