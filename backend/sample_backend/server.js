@@ -1,7 +1,9 @@
 'use strict';
 
 const express = require('express');
+const moment  = require('moment');
 const twitter = require('twitter');
+const Promise = require('promise');
 
 // Constants
 const PORT = 5000;
@@ -23,23 +25,54 @@ app.get('/', function (req, res) {
   res.send('Hello world\n');
 });
 
-
-// routes will go here
-app.get('/twitter', function(req, res) {
-  var hashtag = req.param('hashtag');
-
-  // make a client
-  var twitterClient = new twitter(config);
-  // make a client
-  var twitterClient = new twitter(config);
-  console.log(twitterClient)
-  // pass in the search string, an options object, and a callback
-  twitterClient.get('search/tweets', {q: '#' +  hashtag}, function(error, tweets, response) {
-    console.log(tweets);
+/**
+ * Promise wrapper for Twitter search API
+ * @param {Object} params - API parameters
+ * @return {Promise}
+ */
+function searchTweets(params) {
+  return new Promise(function(fulfill, reject) {
+    var client = new twitter(config);
+    client.get('search/tweets', params, function(err, tweets, _) {
+      if (err) reject(err);
+      else fulfill(tweets);
+    });
   });
-  res.send('Hashtag : ' + hashtag);
-});
+}
 
+/**
+ * Array flatMap extension
+ * https://gist.github.com/samgiles/762ee337dff48623e729
+ */
+Array.prototype.flatMap = function(lambda) { 
+  return Array.prototype.concat.apply([], this.map(lambda)); 
+};
+
+// Routes
+
+/**
+ * GET /twitter
+ * @param {string} q - The query string
+ * @return TODO
+ */
+app.get('/twitter', function(req, res) {
+  var query = req.param('q')
+
+  // NOTE: The API seems to returns the last tweets just before the `until` date,
+  // so we don't have to specify `since_id` to prevent duplicated tweets,
+  // this may be a problem if there is less than 100 tweets per day though.
+  //
+  // Retrieve tweets from today to 8 days since today.
+  var promises = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(function(i) {
+    var date = moment().subtract(i, 'days').format('YYYY-MM-DD');
+    return searchTweets({q: query, until: date})
+  });
+
+  Promise.all(promises).then(function(values) {
+    var tweets = values.flatMap(function(v) { return v.statuses });
+    res.send(tweets);
+  });
+});
 
 app.listen(PORT);
 console.log('Running on http://localhost:' + PORT);
