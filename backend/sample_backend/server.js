@@ -37,7 +37,8 @@ app.get('/twitter', function(req, res) {
   twitterClient.get('search/tweets', {q: '#' +  hashtag}, function(error, tweets, response) {
     console.log(tweets);
   });
-  res.send('Hashtag : ' + hashtag);
+
+  res.json(tweets);
 });
 
 
