@@ -1,0 +1,47 @@
+{
+  "name": "what-people-think-of",
+  "version": "1.0.0",
+  "description": "What People Think Of ... ?",
+  "main": "index.js",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "bootstrap-webpack": "0.0.5",
+    "css-loader": "^0.23.1",
+    "d3": "^3.5.17",
+    "exports-loader": "^0.6.3",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "imports-loader": "^0.6.5",
+    "jquery": "^3.1.0",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.1"
+  },
+  "devDependencies": {
+    "eslint": "^2.13.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.12.0",
+    "eslint-plugin-jsx-a11y": "^1.5.5",
+    "eslint-plugin-react": "^5.2.2",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:lint": "eslint js/",
+    "dev:server": "webpack-dev-server --progress --colors",
+    "dev:deploy": "aws s3 cp build/ s3://690f7e35/ --recursive --region eu-central-1 --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers",
+    "build": "webpack --progress --colors && cp -r {index.html,data} build/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yafeunteun/what-people-think-of.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yafeunteun/what-people-think-of/issues"
+  },
+  "homepage": "https://github.com/yafeunteun/what-people-think-of#readme"
+}
