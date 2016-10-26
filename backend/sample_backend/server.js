@@ -2,6 +2,10 @@
 
 const express = require('express');
 const twitter = require('twitter');
+const path = require('path');
+
+
+
 
 // Constants
 const PORT = 5000;
@@ -16,13 +20,22 @@ var config = {
 };
 
 
-
 // App
 const app = express();
-app.get('/', function (req, res) {
-  res.send('Hello world\n');
-});
 
+
+// set static files location
+// used for requests that our frontend will make
+app.use(express.static(__dirname + "/public"));
+
+
+
+
+// MAIN CATCHALL ROUTE -------
+// SEND USERS TO FRONTEND ------
+app.get("/", function(req, res) {
+  res.sendFile(path.join(__dirname + "/public/index.html"));
+});
 
 // routes will go here
 app.get('/twitter', function(req, res) {
@@ -33,12 +46,15 @@ app.get('/twitter', function(req, res) {
   // make a client
   var twitterClient = new twitter(config);
   console.log(twitterClient)
+
   // pass in the search string, an options object, and a callback
   twitterClient.get('search/tweets', {q: '#' +  hashtag}, function(error, tweets, response) {
     console.log(tweets);
+    res.json({"data": tweets});
   });
 
-  res.json(tweets);
+
+  
 });
 
 
