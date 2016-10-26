@@ -21,9 +21,19 @@ var config = {
 
 // App
 const app = express();
-app.get('/', function (req, res) {
-  res.send('Hello world\n');
+
+// set static files location
+// used for requests that our frontend will make
+app.use(express.static(__dirname + "/public"));
+
+
+// MAIN CATCHALL ROUTE -------
+// SEND USERS TO FRONTEND ------
+app.get("/", function(req, res) {
+  res.sendFile(path.join(__dirname + "/public/index.html"));
 });
+
+
 
 /**
  * Promise wrapper for Twitter search API
