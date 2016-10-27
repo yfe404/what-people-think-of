@@ -3,7 +3,14 @@
 const express = require('express');
 const moment  = require('moment');
 const twitter = require('twitter');
+<<<<<<< HEAD
+const path = require('path');
+
+
+
+=======
 const Promise = require('promise');
+>>>>>>> 4f13184026098737efc76e0403c95fc55eb00a60
 
 // Constants
 const PORT = 5000;
@@ -18,22 +25,8 @@ var config = {
 };
 
 
-
 // App
 const app = express();
-
-// set static files location
-// used for requests that our frontend will make
-app.use(express.static(__dirname + "/public"));
-
-
-// MAIN CATCHALL ROUTE -------
-// SEND USERS TO FRONTEND ------
-app.get("/", function(req, res) {
-  res.sendFile(path.join(__dirname + "/public/index.html"));
-});
-
-
 
 /**
  * Promise wrapper for Twitter search API
@@ -60,6 +53,39 @@ Array.prototype.flatMap = function(lambda) {
 
 // Routes
 
+<<<<<<< HEAD
+// set static files location
+// used for requests that our frontend will make
+app.use(express.static(__dirname + "/public"));
+
+
+
+
+// MAIN CATCHALL ROUTE -------
+// SEND USERS TO FRONTEND ------
+app.get("/", function(req, res) {
+  res.sendFile(path.join(__dirname + "/public/index.html"));
+});
+
+// routes will go here
+app.get('/twitter', function(req, res) {
+  var hashtag = req.param('hashtag');
+
+  // make a client
+  var twitterClient = new twitter(config);
+  // make a client
+  var twitterClient = new twitter(config);
+  console.log(twitterClient)
+
+  // pass in the search string, an options object, and a callback
+  twitterClient.get('search/tweets', {q: '#' +  hashtag}, function(error, tweets, response) {
+    console.log(tweets);
+    res.json({"data": tweets});
+  });
+
+
+  
+=======
 /**
  * GET /twitter
  * @param {string} q - The query string
@@ -75,13 +101,14 @@ app.get('/twitter', function(req, res) {
   // Retrieve tweets from today to 8 days since today.
   var promises = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(function(i) {
     var date = moment().subtract(i, 'days').format('YYYY-MM-DD');
-    return searchTweets({q: query, until: date, lang: 'en'})
+    return searchTweets({q: query, until: date})
   });
 
   Promise.all(promises).then(function(values) {
     var tweets = values.flatMap(function(v) { return v.statuses });
     res.send(tweets);
   });
+>>>>>>> 4f13184026098737efc76e0403c95fc55eb00a60
 });
 
 app.listen(PORT);
