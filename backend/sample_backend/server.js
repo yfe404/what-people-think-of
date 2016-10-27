@@ -65,7 +65,7 @@ app.get('/twitter', function(req, res) {
   // Retrieve tweets from today to 8 days since today.
   var promises = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(function(i) {
     var date = moment().subtract(i, 'days').format('YYYY-MM-DD');
-    return searchTweets({q: query, until: date})
+    return searchTweets({q: query, until: date, lang: 'en'})
   });
 
   Promise.all(promises).then(function(values) {
