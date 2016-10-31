@@ -1,3 +1,4 @@
 .DS_Store
 nltk_data
 twitter.env
+*.tsv
