@@ -2,3 +2,4 @@
 nltk_data
 twitter.env
 *.tsv
+*.gz
