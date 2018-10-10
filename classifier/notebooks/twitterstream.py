@@ -1,5 +1,5 @@
 import oauth2 as oauth
-import urllib2 as urllib
+import urllib3 as urllib
 import os
 import sys
 
@@ -61,7 +61,7 @@ def fetchsamples():
   parameters = []
   response = twitterreq(url, "GET", parameters)
   for line in response:
-    print line.strip()
+    print (line.strip())
 
 if __name__ == '__main__':
   fetchsamples()
