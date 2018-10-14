@@ -1,10 +1,31 @@
 # coding: utf-8
 import os
-import tweepy 
+import base64
+import json
+import tweepy
+import boto3
+
+kinesis = boto3.client('kinesis')
+
 
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
-        print(status.text)
+        if status.text:
+            record = {
+                "id": status.id,
+                "created_at": str(status.created_at),
+                "text": status.text
+            }
+            data=base64.urlsafe_b64encode(
+                json.dumps(record).encode()).decode()
+            data += "|" ## delimiter
+            
+            response = kinesis.put_record(
+                StreamName='twitterStream',
+                Data=data,
+                PartitionKey='key'
+            )
+            print("Sending: {}".format(record["text"].strip()[:50]))
 
 
 consumer_key = os.environ['TWITTER_CONSUMER_KEY']
@@ -19,4 +40,4 @@ api = tweepy.API(auth)
 
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener)
-myStream.filter(track=['cat'])
+myStream.filter(track=['Trump'], languages=["en"])
