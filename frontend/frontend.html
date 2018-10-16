@@ -1,0 +1,107 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.8/c3.min.css">
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.8/c3.js"></script>
+
+<script type="text/javascript">
+    
+    
+var myCredentials = new AWS.CognitoIdentityCredentials({
+IdentityPoolId: "eu-west-1:cd3c98d1-a2ca-4e48-ab87-fed44fc5563b",
+RoleArn: "arn:aws:iam::920313765005:role/Cognito_DynamoPoolUnauth"
+});
+    
+var myConfig = new AWS.Config({
+  credentials: myCredentials, region: 'eu-west-1'
+});
+
+AWS.config = myConfig;
+
+var dynamodb = new AWS.DynamoDB();
+var docClient = new AWS.DynamoDB.DocumentClient();
+
+var chart = {};
+
+
+function readItem() {
+    var table = "twitterSentiments";
+
+    var params = {
+      RequestItems: {
+        "twitterSentiments": {
+          Keys: [
+            {'sentiment': {S: 'POSITIVE'}},
+            {'sentiment': {S: 'NEGATIVE'}},
+            {'sentiment': {S: 'NEUTRAL'}},
+            {'sentiment': {S: 'MIXED'}},
+          ],
+          ProjectionExpression: 'sentiment, tweets'
+        }
+      }
+    };
+    
+dynamodb.batchGetItem(params, function(err, data) {
+  if (err) {
+    document.getElementById('textarea').innerHTML = "Unable to read item: " + "\n" + JSON.stringify(err, undefined, 2);
+  } else {
+   
+      document.getElementById('textarea').innerHTML = "GetItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+    
+      
+    var n_pos = 0;
+    var n_neg = 0;
+    for (i = 0; i < data.Responses.twitterSentiments.length; ++i){
+        console.log(data.Responses.twitterSentiments[i].sentiment.S);
+        if (data.Responses.twitterSentiments[i].sentiment.S == "NEGATIVE") {
+            n_neg = data.Responses.twitterSentiments[i].tweets.N;
+        } else if (data.Responses.twitterSentiments[i].sentiment.S == "POSITIVE") {
+            
+                n_pos = data.Responses.twitterSentiments[i].tweets.N;
+        }
+    }
+    chart = c3.generate({
+    data: {
+        columns: [
+            ["NEGATIVE", n_neg],
+            ["POSITIVE", n_pos]
+        ],
+        type: 'bar'
+    },
+    bar: {
+        width: {
+            ratio: 0.5 // this makes bar width 50% of length between ticks
+        }
+        // or
+        //width: 100 // this makes bar width 100px
+    }
+});
+      
+      
+      
+    
+  }
+});
+
+}
+
+
+//setInterval(readItem, 1000)
+
+</script>
+</head>
+
+<body>
+<input id="readItem" type="button" value="Read Item" onclick="readItem();" />
+<div id="chart"></div>
+    
+
+
+    
+<br>
+<textarea readonly id= "textarea" style="width:400px; height:800px"></textarea>
+
+
+</body>
+</html>
